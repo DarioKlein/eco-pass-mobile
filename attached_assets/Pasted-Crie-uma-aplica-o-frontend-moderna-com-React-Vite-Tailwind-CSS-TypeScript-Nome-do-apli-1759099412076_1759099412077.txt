@@ -1,0 +1,94 @@
+Crie uma aplicação frontend moderna com React + Vite + Tailwind CSS + TypeScript.
+
+## Nome do aplicativo: EcoPass
+
+Essa é uma aplicação responsiva (mobile-first) com layout de **dashboard/admin**, funcionando tanto em celular quanto desktop.
+
+## Objetivo:
+Aplicativo de incentivo à reciclagem. O usuário leva materiais recicláveis a um ponto de coleta e ganha créditos no app que podem ser trocados por transporte público (ônibus, trem, metrô, etc).
+
+---
+
+### 📸 Use a imagem anexa como referência visual
+A interface do aplicativo deve seguir o estilo visual da imagem anexada: moderno, clean, intuitivo. Use cores e disposição semelhantes, especialmente na tela de dashboard.
+
+---
+
+### Estrutura de Páginas e Funcionalidades:
+
+1. **Página de Login e Cadastro**
+   - Usar `localStorage` para simular autenticação (sem backend).
+   - Campos: Nome, CPF, Email, Senha.
+   - Após login, redirecionar para a tela inicial.
+   - Persistir usuário logado no localStorage.
+
+2. **Dashboard (Tela Inicial)**
+   - Mostrar:
+     - Nome da pessoa
+     - Saldo de créditos atual
+     - QRCode do cartão (CPF + ID do usuário)
+     - Atividades recentes (últimas reciclagens)
+     - Ações rápidas (Ex: Nova Reciclagem, Resgatar Créditos)
+
+3. **Página "Meu Cartão"**
+   - Mostrar cartão digital com:
+     - Nome
+     - CPF
+     - ID da pessoa
+     - QRCode
+   - Instruções sobre:
+     - Como levar os materiais
+     - Materiais aceitos
+     - Dicas para reciclagem
+
+4. **Página "Nova Reciclagem"**
+   - Formulário para registrar uma nova reciclagem:
+     - Tipo de material (plástico, papel, vidro, etc)
+     - Peso (kg)
+     - Quantidade
+     - Preço estimado por tipo
+   - Após envio, status: "Aguardando aprovação"
+   - Mostrar lista de últimas reciclagens
+   - Mostrar os **pontos de coleta mais próximos**
+     - Fake data com nome, endereço e horário de funcionamento
+
+5. **Página "Resgatar Créditos"**
+   - Usuário pode escolher:
+     - Tipo de transporte (ônibus, metrô, trem)
+     - Quantidade de créditos a resgatar
+   - Mostrar preço de cada passagem
+   - Atualizar saldo após resgate
+
+6. **Página de Validação (para coletores)**
+   - Interface para o coletor aprovar reciclagens
+   - Lista de reciclagens pendentes
+   - Botões para "Aprovar" ou "Rejeitar"
+   - Após aprovação, atualizar saldo do usuário
+
+---
+
+### Requisitos Técnicos:
+
+- React + Vite + TypeScript
+- TailwindCSS para os estilos
+- Usar localStorage para simular banco de dados
+- Simular usuários, reciclagens e aprovações localmente
+- Gerar QRCode (pode usar a lib `qrcode.react`)
+- Projeto responsivo (mobile + desktop)
+- Organização em componentes e páginas
+- Utilizar React Router para navegação
+- Manter um design moderno (ex: cards, ícones, animações suaves)
+
+---
+
+### Componentes sugeridos:
+
+- Header com navegação entre as páginas
+- Sidebar (ou menu inferior em mobile)
+- Cartão digital do usuário com QRCode
+- Tabela ou cards para atividades
+- Modais para confirmar ações (resgates, aprovações)
+
+---
+
+Não usar backend, tudo deve funcionar localmente com React + localStorage. Pode usar dados fakes ou simular ações. Layout limpo, bonito e fácil de usar.
