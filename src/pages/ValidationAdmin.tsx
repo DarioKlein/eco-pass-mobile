@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { getRecyclingItems, updateRecyclingItem, getUsers, saveUser } from '../utils/localStorage';
-import { useAuth } from '../context/AuthContext';
-import { RecyclingItem, User } from '../types';
-import { CheckCircle, XCircle, Clock, Scale, Package, User as UserIcon } from 'lucide-react';
+import React, { useState, useEffect } from 'react'
+import { getRecyclingItems, updateRecyclingItem, getUsers, saveUser } from '../utils/localStorage'
+import { useAuth } from '../context/AuthContext'
+import { RecyclingItem, User } from '../types'
+import { CheckCircle, XCircle, Clock, Scale, Package, User as UserIcon } from 'lucide-react'
 
 const ValidationAdmin: React.FC = () => {
-  const { user: currentUser, updateUser } = useAuth();
-  const [recyclingItems, setRecyclingItems] = useState<RecyclingItem[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
-  const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('pending');
-  const [isProcessing, setIsProcessing] = useState<Record<string, boolean>>({});
+  const { user: currentUser, updateUser } = useAuth()
+  const [recyclingItems, setRecyclingItems] = useState<RecyclingItem[]>([])
+  const [users, setUsers] = useState<User[]>([])
+  const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('pending')
+  const [isProcessing, setIsProcessing] = useState<Record<string, boolean>>({})
 
   const materialTypes = [
     { value: 'plastic', label: 'Plástico', price: 1.0, icon: '♻️' },
@@ -17,95 +17,101 @@ const ValidationAdmin: React.FC = () => {
     { value: 'glass', label: 'Vidro', price: 0.5, icon: '🫙' },
     { value: 'metal', label: 'Metal', price: 2.0, icon: '🥫' },
     { value: 'electronics', label: 'Eletrônicos', price: 5.0, icon: '📱' },
-  ];
+  ]
 
   useEffect(() => {
-    loadData();
-  }, []);
+    loadData()
+  }, [])
 
   const loadData = () => {
-    const items = getRecyclingItems();
-    const allUsers = getUsers();
-    setRecyclingItems(items);
-    setUsers(allUsers);
-  };
+    const items = getRecyclingItems()
+    const allUsers = getUsers()
+    setRecyclingItems(items)
+    setUsers(allUsers)
+  }
 
   const filteredItems = recyclingItems.filter(item => {
-    if (filter === 'all') return true;
-    return item.status === filter;
-  });
+    if (filter === 'all') return true
+    return item.status === filter
+  })
 
   const handleApprove = async (item: RecyclingItem) => {
-    setIsProcessing(prev => ({ ...prev, [item.id]: true }));
+    setIsProcessing(prev => ({ ...prev, [item.id]: true }))
 
     try {
       // Update recycling item status
-      updateRecyclingItem(item.id, { status: 'approved' });
+      updateRecyclingItem(item.id, { status: 'approved' })
 
       // Find and update user credits
-      const user = users.find(u => u.id === item.userId);
+      const user = users.find(u => u.id === item.userId)
       if (user) {
         const updatedUser = {
           ...user,
           credits: user.credits + item.estimatedValue,
           totalEarned: user.totalEarned + item.estimatedValue,
-        };
-        saveUser(updatedUser);
-        
+        }
+        saveUser(updatedUser)
+
         // If the approved user is the current logged user, update the context too
         if (currentUser && currentUser.id === item.userId) {
-          updateUser(updatedUser);
+          updateUser(updatedUser)
         }
       }
 
-      loadData();
+      loadData()
     } catch (error) {
-      console.error('Error approving item:', error);
+      console.error('Error approving item:', error)
     } finally {
-      setIsProcessing(prev => ({ ...prev, [item.id]: false }));
+      setIsProcessing(prev => ({ ...prev, [item.id]: false }))
     }
-  };
+  }
 
   const handleReject = async (item: RecyclingItem) => {
-    setIsProcessing(prev => ({ ...prev, [item.id]: true }));
+    setIsProcessing(prev => ({ ...prev, [item.id]: true }))
 
     try {
-      updateRecyclingItem(item.id, { status: 'rejected' });
-      loadData();
+      updateRecyclingItem(item.id, { status: 'rejected' })
+      loadData()
     } catch (error) {
-      console.error('Error rejecting item:', error);
+      console.error('Error rejecting item:', error)
     } finally {
-      setIsProcessing(prev => ({ ...prev, [item.id]: false }));
+      setIsProcessing(prev => ({ ...prev, [item.id]: false }))
     }
-  };
+  }
 
   const getUserById = (userId: string) => {
-    return users.find(u => u.id === userId);
-  };
+    return users.find(u => u.id === userId)
+  }
 
   const getMaterialInfo = (type: RecyclingItem['type']) => {
-    return materialTypes.find(m => m.value === type);
-  };
+    return materialTypes.find(m => m.value === type)
+  }
 
   const getStatusColor = (status: RecyclingItem['status']) => {
     switch (status) {
-      case 'approved': return 'bg-green-100 text-green-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
-      default: return 'bg-yellow-100 text-yellow-800';
+      case 'approved':
+        return 'bg-green-100 text-green-800'
+      case 'rejected':
+        return 'bg-red-100 text-red-800'
+      default:
+        return 'bg-yellow-100 text-yellow-800'
     }
-  };
+  }
 
   const getStatusText = (status: RecyclingItem['status']) => {
     switch (status) {
-      case 'approved': return 'Aprovado';
-      case 'rejected': return 'Rejeitado';
-      default: return 'Pendente';
+      case 'approved':
+        return 'Aprovado'
+      case 'rejected':
+        return 'Rejeitado'
+      default:
+        return 'Pendente'
     }
-  };
+  }
 
-  const pendingCount = recyclingItems.filter(item => item.status === 'pending').length;
-  const approvedCount = recyclingItems.filter(item => item.status === 'approved').length;
-  const rejectedCount = recyclingItems.filter(item => item.status === 'rejected').length;
+  const pendingCount = recyclingItems.filter(item => item.status === 'pending').length
+  const approvedCount = recyclingItems.filter(item => item.status === 'approved').length
+  const rejectedCount = recyclingItems.filter(item => item.status === 'rejected').length
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -113,9 +119,7 @@ const ValidationAdmin: React.FC = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Validação de Reciclagens</h1>
-          <p className="text-gray-600 mt-1">
-            Interface para coletores aprovarem ou rejeitarem submissões
-          </p>
+          <p className="text-gray-600 mt-1">Interface para coletores aprovarem ou rejeitarem submissões</p>
         </div>
 
         {/* Stats */}
@@ -169,7 +173,7 @@ const ValidationAdmin: React.FC = () => {
               { value: 'approved', label: 'Aprovados', count: approvedCount },
               { value: 'rejected', label: 'Rejeitados', count: rejectedCount },
               { value: 'all', label: 'Todos', count: recyclingItems.length },
-            ].map((filterOption) => (
+            ].map(filterOption => (
               <button
                 key={filterOption.value}
                 onClick={() => setFilter(filterOption.value as any)}
@@ -193,22 +197,20 @@ const ValidationAdmin: React.FC = () => {
             </div>
           ) : (
             <div className="divide-y divide-gray-200">
-              {filteredItems.map((item) => {
-                const user = getUserById(item.userId);
-                const material = getMaterialInfo(item.type);
-                const isProcessingItem = isProcessing[item.id];
+              {filteredItems.map(item => {
+                const user = getUserById(item.userId)
+                const material = getMaterialInfo(item.type)
+                const isProcessingItem = isProcessing[item.id]
 
                 return (
                   <div key={item.id} className="p-6 hover:bg-gray-50">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col justify-between md:flex-row md:items-center">
                       <div className="flex-1">
-                        <div className="flex items-center space-x-4">
+                        <div className="flex flex-col md:flex-row md:items-center space-x-4">
                           <span className="text-2xl">{material?.icon}</span>
                           <div>
-                            <h3 className="text-lg font-semibold text-gray-900">
-                              {material?.label}
-                            </h3>
-                            <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
+                            <h3 className="text-lg font-semibold text-gray-900 -ml-3 md:ml-0">{material?.label}</h3>
+                            <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1 -ml-3 md:ml-0">
                               <div className="flex items-center">
                                 <Scale className="h-4 w-4 mr-1" />
                                 {item.weight} kg
@@ -218,24 +220,37 @@ const ValidationAdmin: React.FC = () => {
                                 {item.quantity} unidades
                               </div>
                               <div className="flex items-center">
-                                <UserIcon className="h-4 w-4 mr-1" />
-                                {user?.name || 'Usuário não encontrado'}
+                                <UserIcon className="h-4 w-4 mr-1 shrink-0" />
+
+                                {/* Mobile: corta com 5 caracteres */}
+                                <span className="block md:hidden text-xs">
+                                  {user?.name
+                                    ? user.name.length > 5
+                                      ? user.name.substring(0, 12) + '...'
+                                      : user.name
+                                    : 'Usuário não encontrado'}
+                                </span>
+
+                                {/* Desktop: mostra completo */}
+                                <span className="hidden md:block">{user?.name || 'Usuário não encontrado'}</span>
                               </div>
                             </div>
-                            <p className="text-sm text-gray-500 mt-1">
-                              {new Date(item.date).toLocaleDateString('pt-BR')} às {' '}
+                            <p className=" flex text-sm text-gray-500 mt-1 pt-1 -ml-3 justify-start md:ml-0">
+                              {new Date(item.date).toLocaleDateString('pt-BR')} às{' '}
                               {new Date(item.date).toLocaleTimeString('pt-BR')}
                             </p>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center space-x-4">
+                      <div className="flex items-center justify-start space-x-4 w-full md:w-auto md:items-center md:justify-end pt-1 md:pt-0">
                         <div className="text-right">
-                          <p className="text-lg font-bold text-gray-900">
-                            R$ {item.estimatedValue.toFixed(2)}
-                          </p>
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
+                          <p className="text-lg font-bold text-gray-900">R$ {item.estimatedValue.toFixed(2)}</p>
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                              item.status
+                            )}`}
+                          >
                             {getStatusText(item.status)}
                           </span>
                         </div>
@@ -269,14 +284,14 @@ const ValidationAdmin: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                );
+                )
               })}
             </div>
           )}
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ValidationAdmin;
+export default ValidationAdmin
