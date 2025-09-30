@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { saveRecyclingItem, generateId, getUserRecyclingItems } from '../utils/localStorage';
-import { RecyclingItem, CollectionPoint } from '../types';
-import { Plus, MapPin, Clock, Recycle, Scale, Package } from 'lucide-react';
+import React, { useState } from 'react'
+import { useAuth } from '../context/AuthContext'
+import { saveRecyclingItem, generateId, getUserRecyclingItems } from '../utils/localStorage'
+import { RecyclingItem, CollectionPoint } from '../types'
+import { Plus, MapPin, Clock, Recycle, Scale, Package } from 'lucide-react'
 
 const NewRecycling: React.FC = () => {
-  const { user } = useAuth();
+  const { user } = useAuth()
   const [formData, setFormData] = useState({
     type: '' as RecyclingItem['type'] | '',
     weight: '',
     quantity: '',
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const materialTypes = [
     { value: 'plastic', label: 'Plástico', price: 1.0, icon: '♻️' },
@@ -20,7 +20,7 @@ const NewRecycling: React.FC = () => {
     { value: 'glass', label: 'Vidro', price: 0.5, icon: '🫙' },
     { value: 'metal', label: 'Metal', price: 2.0, icon: '🥫' },
     { value: 'electronics', label: 'Eletrônicos', price: 5.0, icon: '📱' },
-  ];
+  ]
 
   const collectionPoints: CollectionPoint[] = [
     {
@@ -47,26 +47,59 @@ const NewRecycling: React.FC = () => {
       acceptedMaterials: ['Eletrônicos', 'Plástico', 'Metal'],
       distance: 2.1,
     },
-  ];
+  ]
 
-  const userRecyclingItems = user ? getUserRecyclingItems(user.id) : [];
+  const userRecyclingItems = user ? getUserRecyclingItems(user.id) : []
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+    const { name, value } = e.target
+    let newValue = value
+
+    if (name === 'weight') {
+      // Permite até 999.9
+      const numericValue = parseFloat(value)
+
+      if (!isNaN(numericValue) && numericValue > 999.9) {
+        newValue = '999.9'
+      }
+
+      // Garante no máximo 5 caracteres (ex: "999.9")
+      if (newValue.length > 5) {
+        newValue = newValue.slice(0, 5)
+      }
+    }
+
+    if (name === 'quantity') {
+      // Permite até 9999 unidades
+      const intValue = parseInt(value, 10)
+
+      if (!isNaN(intValue) && intValue > 9999) {
+        newValue = '9999'
+      }
+
+      // Garante no máximo 4 caracteres
+      if (newValue.length > 4) {
+        newValue = newValue.slice(0, 4)
+      }
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      [name]: newValue,
+    }))
+  }
 
   const calculateEstimatedValue = () => {
-    const selectedMaterial = materialTypes.find(m => m.value === formData.type);
-    if (!selectedMaterial || !formData.weight) return 0;
-    return selectedMaterial.price * parseFloat(formData.weight);
-  };
+    const selectedMaterial = materialTypes.find(m => m.value === formData.type)
+    if (!selectedMaterial || !formData.weight) return 0
+    return selectedMaterial.price * parseFloat(formData.weight)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user || !formData.type || !formData.weight || !formData.quantity) return;
+    e.preventDefault()
+    if (!user || !formData.type || !formData.weight || !formData.quantity) return
 
-    setIsSubmitting(true);
+    setIsSubmitting(true)
 
     try {
       const newItem: RecyclingItem = {
@@ -78,19 +111,19 @@ const NewRecycling: React.FC = () => {
         estimatedValue: calculateEstimatedValue(),
         status: 'pending',
         date: new Date().toISOString(),
-      };
+      }
 
-      saveRecyclingItem(newItem);
-      
-      setFormData({ type: '', weight: '', quantity: '' });
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
+      saveRecyclingItem(newItem)
+
+      setFormData({ type: '', weight: '', quantity: '' })
+      setShowSuccess(true)
+      setTimeout(() => setShowSuccess(false), 3000)
     } catch (error) {
-      console.error('Error saving recycling item:', error);
+      console.error('Error saving recycling item:', error)
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -131,7 +164,7 @@ const NewRecycling: React.FC = () => {
                   required
                 >
                   <option value="">Selecione o tipo</option>
-                  {materialTypes.map((material) => (
+                  {materialTypes.map(material => (
                     <option key={material.value} value={material.value}>
                       {material.icon} {material.label} - R$ {material.price.toFixed(2)}/kg
                     </option>
@@ -181,12 +214,8 @@ const NewRecycling: React.FC = () => {
               {formData.type && formData.weight && (
                 <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
                   <h4 className="font-semibold text-primary-900 mb-2">Estimativa de Valor</h4>
-                  <p className="text-2xl font-bold text-primary-600">
-                    R$ {calculateEstimatedValue().toFixed(2)}
-                  </p>
-                  <p className="text-primary-700 text-sm">
-                    Valor sujeito à aprovação do coletor
-                  </p>
+                  <p className="text-2xl font-bold text-primary-600">R$ {calculateEstimatedValue().toFixed(2)}</p>
+                  <p className="text-primary-700 text-sm">Valor sujeito à aprovação do coletor</p>
                 </div>
               )}
 
@@ -216,8 +245,11 @@ const NewRecycling: React.FC = () => {
               </div>
 
               <div className="space-y-4">
-                {collectionPoints.map((point) => (
-                  <div key={point.id} className="border border-gray-200 rounded-lg p-4 hover:border-primary-300 transition-colors">
+                {collectionPoints.map(point => (
+                  <div
+                    key={point.id}
+                    className="border border-gray-200 rounded-lg p-4 hover:border-primary-300 transition-colors"
+                  >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900">{point.name}</h4>
@@ -233,9 +265,7 @@ const NewRecycling: React.FC = () => {
                         </div>
                       </div>
                       <div className="text-right ml-4">
-                        <span className="text-sm font-medium text-gray-900">
-                          {point.distance} km
-                        </span>
+                        <span className="text-sm font-medium text-gray-900">{point.distance} km</span>
                       </div>
                     </div>
                   </div>
@@ -251,13 +281,11 @@ const NewRecycling: React.FC = () => {
               </div>
 
               {userRecyclingItems.length === 0 ? (
-                <p className="text-gray-500 text-center py-8">
-                  Nenhuma reciclagem registrada ainda.
-                </p>
+                <p className="text-gray-500 text-center py-8">Nenhuma reciclagem registrada ainda.</p>
               ) : (
                 <div className="space-y-3">
-                  {userRecyclingItems.slice(0, 5).map((item) => {
-                    const material = materialTypes.find(m => m.value === item.type);
+                  {userRecyclingItems.slice(0, 5).map(item => {
+                    const material = materialTypes.find(m => m.value === item.type)
                     return (
                       <div key={item.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div className="flex items-center">
@@ -266,28 +294,29 @@ const NewRecycling: React.FC = () => {
                             <p className="font-medium text-gray-900">
                               {material?.label} - {item.weight}kg
                             </p>
-                            <p className="text-sm text-gray-500">
-                              {new Date(item.date).toLocaleDateString('pt-BR')}
-                            </p>
+                            <p className="text-sm text-gray-500">{new Date(item.date).toLocaleDateString('pt-BR')}</p>
                           </div>
                         </div>
                         <div className="text-right">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            item.status === 'approved' 
-                              ? 'bg-green-100 text-green-800'
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              item.status === 'approved'
+                                ? 'bg-green-100 text-green-800'
+                                : item.status === 'rejected'
+                                ? 'bg-red-100 text-red-800'
+                                : 'bg-yellow-100 text-yellow-800'
+                            }`}
+                          >
+                            {item.status === 'approved'
+                              ? 'Aprovado'
                               : item.status === 'rejected'
-                              ? 'bg-red-100 text-red-800'
-                              : 'bg-yellow-100 text-yellow-800'
-                          }`}>
-                            {item.status === 'approved' ? 'Aprovado' : 
-                             item.status === 'rejected' ? 'Rejeitado' : 'Pendente'}
+                              ? 'Rejeitado'
+                              : 'Pendente'}
                           </span>
-                          <p className="text-sm font-medium text-gray-900 mt-1">
-                            R$ {item.estimatedValue.toFixed(2)}
-                          </p>
+                          <p className="text-sm font-medium text-gray-900 mt-1">R$ {item.estimatedValue.toFixed(2)}</p>
                         </div>
                       </div>
-                    );
+                    )
                   })}
                 </div>
               )}
@@ -296,7 +325,7 @@ const NewRecycling: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default NewRecycling;
+export default NewRecycling

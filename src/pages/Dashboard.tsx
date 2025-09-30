@@ -1,22 +1,20 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { QRCodeSVG } from 'qrcode.react';
-import { TrendingUp, CreditCard, Plus, Gift } from 'lucide-react';
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { QRCodeSVG } from 'qrcode.react'
+import { TrendingUp, CreditCard, Plus, Gift } from 'lucide-react'
 
 const Dashboard: React.FC = () => {
-  const { user } = useAuth();
+  const { user } = useAuth()
 
-  if (!user) return null;
+  if (!user) return null
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         {/* Header */}
         <div className="mb-6 lg:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-            Bem-vindo, {user.name.split(' ')[0]}!
-          </h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Bem-vindo, {user.name.split(' ')[0]}!</h1>
           <p className="text-gray-600 mt-1 text-sm sm:text-base">
             Acompanhe seu saldo, submissões e histórico de reciclagem
           </p>
@@ -32,13 +30,12 @@ const Dashboard: React.FC = () => {
                 <h2 className="text-xl font-semibold text-gray-900">Saldo Disponível</h2>
                 <CreditCard className="h-6 w-6 text-primary-600" />
               </div>
-              <div className="text-3xl font-bold text-primary-600 mb-2">
-                R$ {user.credits.toFixed(2)}
-              </div>
-              <p className="text-gray-600 text-sm mb-4">
-                + R$ 1.60 pendente
-              </p>
-              <Link to="/redeem-credits" className="block w-full bg-primary-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-primary-700 transition-colors text-center">
+              <div className="text-3xl font-bold text-primary-600 mb-2">R$ {user.credits.toFixed(2)}</div>
+              <p className="text-gray-600 text-sm mb-4">+ R$ 1.60 pendente</p>
+              <Link
+                to="/redeem-credits"
+                className="block w-full bg-primary-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-primary-700 transition-colors text-center"
+              >
                 Resgatar Créditos
               </Link>
             </div>
@@ -54,7 +51,7 @@ const Dashboard: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="bg-white rounded-lg shadow p-4 sm:p-6">
                 <div className="flex items-center">
                   <Gift className="h-8 w-8 text-blue-500" />
@@ -90,13 +87,19 @@ const Dashboard: React.FC = () => {
 
             {/* Quick Actions */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Link to="/new-recycling" className="bg-primary-600 text-white p-4 sm:p-6 rounded-lg hover:bg-primary-700 transition-colors text-left block">
+              <Link
+                to="/new-recycling"
+                className="bg-primary-600 text-white p-4 sm:p-6 rounded-lg hover:bg-primary-700 transition-colors text-left block"
+              >
                 <Plus className="h-8 w-8 mb-3" />
                 <h3 className="font-semibold text-lg">Nova Reciclagem</h3>
                 <p className="text-primary-100 text-sm">Registre seus materiais</p>
               </Link>
-              
-              <Link to="/redeem-credits" className="bg-blue-600 text-white p-4 sm:p-6 rounded-lg hover:bg-blue-700 transition-colors text-left block">
+
+              <Link
+                to="/redeem-credits"
+                className="bg-blue-600 text-white p-4 sm:p-6 rounded-lg hover:bg-blue-700 transition-colors text-left block"
+              >
                 <Gift className="h-8 w-8 mb-3" />
                 <h3 className="font-semibold text-lg">Resgatar Créditos</h3>
                 <p className="text-blue-100 text-sm">Troque por transporte</p>
@@ -108,10 +111,8 @@ const Dashboard: React.FC = () => {
           <div className="lg:col-span-1 order-first lg:order-last">
             <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:sticky lg:top-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Seu Cartão Digital</h3>
-              <p className="text-gray-600 text-sm mb-6">
-                Apresente este QR code nos pontos de coleta
-              </p>
-              
+              <p className="text-gray-600 text-sm mb-6">Apresente este QR code nos pontos de coleta</p>
+
               <div className="text-center">
                 <div className="bg-gray-50 p-3 sm:p-4 rounded-lg mb-4">
                   <QRCodeSVG
@@ -120,7 +121,7 @@ const Dashboard: React.FC = () => {
                     className="mx-auto w-full max-w-[160px] h-auto"
                   />
                 </div>
-                
+
                 <div className="text-left space-y-2">
                   <p className="text-sm text-gray-600">
                     <span className="font-medium">Nome:</span> {user.name}
@@ -138,7 +139,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { saveUser } from '../utils/localStorage';
-import { TransportOption } from '../types';
-import { CreditCard, Bus, Train, Navigation, Gift, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react'
+import { useAuth } from '../context/AuthContext'
+import { saveUser } from '../utils/localStorage'
+import { TransportOption } from '../types'
+import { CreditCard, Bus, Train, Navigation, Gift, ArrowRight } from 'lucide-react'
 
 const RedeemCredits: React.FC = () => {
-  const { user, updateUser } = useAuth();
-  const [selectedTransport, setSelectedTransport] = useState<TransportOption | null>(null);
-  const [credits, setCredits] = useState('');
-  const [isRedeeming, setIsRedeeming] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const { user, updateUser } = useAuth()
+  const [selectedTransport, setSelectedTransport] = useState<TransportOption | null>(null)
+  const [credits, setCredits] = useState('')
+  const [isRedeeming, setIsRedeeming] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const transportOptions: TransportOption[] = [
     {
@@ -33,46 +33,46 @@ const RedeemCredits: React.FC = () => {
       pricePerCredit: 2.0,
       icon: '🚆',
     },
-  ];
+  ]
 
   const calculatePassages = () => {
-    if (!selectedTransport || !credits) return 0;
-    return Math.floor(parseFloat(credits) / selectedTransport.pricePerCredit);
-  };
+    if (!selectedTransport || !credits) return 0
+    return Math.floor(parseFloat(credits) / selectedTransport.pricePerCredit)
+  }
 
   const handleRedeem = async () => {
-    if (!user || !selectedTransport || !credits) return;
+    if (!user || !selectedTransport || !credits) return
 
-    const creditsToRedeem = parseFloat(credits);
-    if (creditsToRedeem > user.credits) return;
+    const creditsToRedeem = parseFloat(credits)
+    if (creditsToRedeem > user.credits) return
 
-    setIsRedeeming(true);
+    setIsRedeeming(true)
 
     try {
-      const newCredits = user.credits - creditsToRedeem;
-      const newTotalRedeemed = user.totalRedeemed + creditsToRedeem;
-      
+      const newCredits = user.credits - creditsToRedeem
+      const newTotalRedeemed = user.totalRedeemed + creditsToRedeem
+
       const updatedUser = {
         ...user,
         credits: newCredits,
         totalRedeemed: newTotalRedeemed,
-      };
+      }
 
-      updateUser(updatedUser);
-      saveUser(updatedUser);
+      updateUser(updatedUser)
+      saveUser(updatedUser)
 
-      setCredits('');
-      setSelectedTransport(null);
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
+      setCredits('')
+      setSelectedTransport(null)
+      setShowSuccess(true)
+      setTimeout(() => setShowSuccess(false), 3000)
     } catch (error) {
-      console.error('Error redeeming credits:', error);
+      console.error('Error redeeming credits:', error)
     } finally {
-      setIsRedeeming(false);
+      setIsRedeeming(false)
     }
-  };
+  }
 
-  if (!user) return null;
+  if (!user) return null
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -80,9 +80,7 @@ const RedeemCredits: React.FC = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Resgatar Créditos</h1>
-          <p className="text-gray-600 mt-1">
-            Troque seus créditos por passagens de transporte público
-          </p>
+          <p className="text-gray-600 mt-1">Troque seus créditos por passagens de transporte público</p>
         </div>
 
         {showSuccess && (
@@ -98,9 +96,7 @@ const RedeemCredits: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900 mb-2">Saldo Atual</h2>
-                  <div className="text-3xl font-bold text-primary-600">
-                    R$ {user.credits.toFixed(2)}
-                  </div>
+                  <div className="text-3xl font-bold text-primary-600">R$ {user.credits.toFixed(2)}</div>
                   <p className="text-gray-600 text-sm mt-1">Disponível para resgate</p>
                 </div>
                 <CreditCard className="h-12 w-12 text-primary-600" />
@@ -112,9 +108,9 @@ const RedeemCredits: React.FC = () => {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-6">Escolha o Transporte</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                {transportOptions.map((option) => (
+                {transportOptions.map(option => (
                   <button
                     key={option.id}
                     onClick={() => setSelectedTransport(option)}
@@ -127,9 +123,7 @@ const RedeemCredits: React.FC = () => {
                     <div className="text-center">
                       <div className="text-3xl mb-2">{option.icon}</div>
                       <h4 className="font-semibold text-gray-900 text-sm">{option.name}</h4>
-                      <p className="text-gray-600 text-xs mt-1">
-                        R$ {option.pricePerCredit.toFixed(2)}/passagem
-                      </p>
+                      <p className="text-gray-600 text-xs mt-1">R$ {option.pricePerCredit.toFixed(2)}/passagem</p>
                     </div>
                   </button>
                 ))}
@@ -148,7 +142,7 @@ const RedeemCredits: React.FC = () => {
                       min="0"
                       max={user.credits}
                       value={credits}
-                      onChange={(e) => setCredits(e.target.value)}
+                      onChange={e => setCredits(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                       placeholder={`Máximo: R$ ${user.credits.toFixed(2)}`}
                     />
@@ -162,9 +156,7 @@ const RedeemCredits: React.FC = () => {
                           <p className="text-2xl font-bold text-blue-600">
                             {calculatePassages()} passagem{calculatePassages() !== 1 ? 's' : ''}
                           </p>
-                          <p className="text-blue-700 text-sm">
-                            {selectedTransport.name}
-                          </p>
+                          <p className="text-blue-700 text-sm">{selectedTransport.name}</p>
                         </div>
                         <ArrowRight className="h-8 w-8 text-blue-500" />
                       </div>
@@ -194,27 +186,21 @@ const RedeemCredits: React.FC = () => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Resumo da Conta</h3>
-              
+
               <div className="space-y-4">
                 <div className="flex justify-between items-center pb-3 border-b">
                   <span className="text-gray-600">Total Ganho</span>
-                  <span className="font-semibold text-green-600">
-                    R$ {user.totalEarned.toFixed(2)}
-                  </span>
+                  <span className="font-semibold text-green-600">R$ {user.totalEarned.toFixed(2)}</span>
                 </div>
-                
+
                 <div className="flex justify-between items-center pb-3 border-b">
                   <span className="text-gray-600">Total Resgatado</span>
-                  <span className="font-semibold text-blue-600">
-                    R$ {user.totalRedeemed.toFixed(2)}
-                  </span>
+                  <span className="font-semibold text-blue-600">R$ {user.totalRedeemed.toFixed(2)}</span>
                 </div>
-                
+
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Saldo Atual</span>
-                  <span className="font-semibold text-primary-600">
-                    R$ {user.credits.toFixed(2)}
-                  </span>
+                  <span className="font-semibold text-primary-600">R$ {user.credits.toFixed(2)}</span>
                 </div>
               </div>
 
@@ -229,7 +215,7 @@ const RedeemCredits: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default RedeemCredits;
+export default RedeemCredits

@@ -226,7 +226,7 @@ const ValidationAdmin: React.FC = () => {
                                 <span className="block md:hidden text-xs">
                                   {user?.name
                                     ? user.name.length > 5
-                                      ? user.name.substring(0, 12) + '...'
+                                      ? user.name.substring(0, 8) + '...'
                                       : user.name
                                     : 'Usuário não encontrado'}
                                 </span>
@@ -244,7 +244,7 @@ const ValidationAdmin: React.FC = () => {
                       </div>
 
                       <div className="flex items-center justify-start space-x-4 w-full md:w-auto md:items-center md:justify-end pt-1 md:pt-0">
-                        <div className="text-right">
+                        <div className="text-left md:text-center">
                           <p className="text-lg font-bold text-gray-900">R$ {item.estimatedValue.toFixed(2)}</p>
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(

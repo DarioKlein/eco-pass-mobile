@@ -1,12 +1,12 @@
-import React from 'react';
-import { useAuth } from '../context/AuthContext';
-import { QRCodeSVG } from 'qrcode.react';
-import { CreditCard, Info, MapPin, Clock, Recycle } from 'lucide-react';
+import React from 'react'
+import { useAuth } from '../context/AuthContext'
+import { QRCodeSVG } from 'qrcode.react'
+import { CreditCard, Info, MapPin, Clock, Recycle } from 'lucide-react'
 
 const MyCard: React.FC = () => {
-  const { user } = useAuth();
+  const { user } = useAuth()
 
-  if (!user) return null;
+  if (!user) return null
 
   const acceptedMaterials = [
     { type: 'Plástico', description: 'Garrafas PET, embalagens, sacolas', icon: '♻️' },
@@ -14,7 +14,7 @@ const MyCard: React.FC = () => {
     { type: 'Vidro', description: 'Garrafas, potes, recipientes', icon: '🫙' },
     { type: 'Metal', description: 'Latas de alumínio, ferro, cobre', icon: '🥫' },
     { type: 'Eletrônicos', description: 'Celulares, pilhas, componentes', icon: '📱' },
-  ];
+  ]
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -162,6 +162,6 @@ const MyCard: React.FC = () => {
       </div>
     </div>
   )
-};
+}
 
-export default MyCard;
+export default MyCard

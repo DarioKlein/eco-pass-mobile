@@ -1,58 +1,58 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User } from '../types';
-import { getCurrentUser, setCurrentUser, clearCurrentUser } from '../utils/localStorage';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { User } from '../types'
+import { getCurrentUser, setCurrentUser, clearCurrentUser } from '../utils/localStorage'
 
 interface AuthContextType {
-  user: User | null;
-  login: (user: User) => void;
-  logout: () => void;
-  updateUser: (updates: Partial<User>) => void;
-  isAuthenticated: boolean;
+  user: User | null
+  login: (user: User) => void
+  logout: () => void
+  updateUser: (updates: Partial<User>) => void
+  isAuthenticated: boolean
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = useContext(AuthContext)
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth must be used within an AuthProvider')
   }
-  return context;
-};
+  return context
+}
 
 interface AuthProviderProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const savedUser = getCurrentUser();
+    const savedUser = getCurrentUser()
     if (savedUser) {
-      setUser(savedUser);
+      setUser(savedUser)
     }
-    setIsLoading(false);
-  }, []);
+    setIsLoading(false)
+  }, [])
 
   const login = (newUser: User) => {
-    setUser(newUser);
-    setCurrentUser(newUser);
-  };
+    setUser(newUser)
+    setCurrentUser(newUser)
+  }
 
   const logout = () => {
-    setUser(null);
-    clearCurrentUser();
-  };
+    setUser(null)
+    clearCurrentUser()
+  }
 
   const updateUser = (updates: Partial<User>) => {
     if (user) {
-      const updatedUser = { ...user, ...updates };
-      setUser(updatedUser);
-      setCurrentUser(updatedUser);
+      const updatedUser = { ...user, ...updates }
+      setUser(updatedUser)
+      setCurrentUser(updatedUser)
     }
-  };
+  }
 
   const value = {
     user,
@@ -60,7 +60,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     updateUser,
     isAuthenticated: !!user,
-  };
+  }
 
   if (isLoading) {
     return (
@@ -70,8 +70,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           <p className="mt-4 text-gray-600">Carregando...</p>
         </div>
       </div>
-    );
+    )
   }
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-};
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+}
