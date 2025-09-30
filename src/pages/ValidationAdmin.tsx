@@ -211,11 +211,11 @@ const ValidationAdmin: React.FC = () => {
                           <div>
                             <h3 className="text-lg font-semibold text-gray-900 -ml-3 md:ml-0">{material?.label}</h3>
                             <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1 -ml-3 md:ml-0">
-                              <div className="flex items-center">
+                              <div className="flex items-center text-xs">
                                 <Scale className="h-4 w-4 mr-1" />
                                 {item.weight} kg
                               </div>
-                              <div className="flex items-center">
+                              <div className="flex items-center text-xs">
                                 <Package className="h-4 w-4 mr-1" />
                                 {item.quantity} unidades
                               </div>
@@ -226,7 +226,7 @@ const ValidationAdmin: React.FC = () => {
                                 <span className="block md:hidden text-xs">
                                   {user?.name
                                     ? user.name.length > 5
-                                      ? user.name.substring(0, 8) + '...'
+                                      ? user.name.substring(0, 7) + '...'
                                       : user.name
                                     : 'Usuário não encontrado'}
                                 </span>
